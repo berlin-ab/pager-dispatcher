@@ -3,7 +3,7 @@
 require 'pager/dispatcher/dsl'
 
 every 10.seconds do
-  notify 'berlin.ab@gmail.com'
+  notify ENV['RECIPIENT_EMAIL_ADDRESS']
 
   check_url 'http://google.com', within: 5.seconds
   check_url 'http://asdfgooooogle.com', within: 5.seconds
