@@ -3,7 +3,7 @@
 require 'pager/dispatcher/dsl'
 
 every 10.seconds do
-  notify ENV['RECIPIENT_EMAIL_ADDRESS']
+  notify ENV['PAGERDUTY_API_KEY']
 
   check_url 'http://google.com', within: 5.seconds
   check_url 'http://asdfgooooogle.com', within: 5.seconds

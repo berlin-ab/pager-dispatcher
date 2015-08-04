@@ -2,6 +2,7 @@ require 'httparty'
 require 'timeout'
 require 'active_support/all'
 require 'clockwork'
+require 'pagerduty'
 
 module Pager
   class Response
@@ -33,7 +34,7 @@ module Pager
         response = HTTParty.get(@url)
 
         if response.code == 200
-          Response.new "success checking #{@url}", success: false
+          Response.new "success checking #{@url}"
         else
           Response.new "error on #{@url}", success: false
         end
@@ -50,22 +51,25 @@ module Pager
   end
 
   class Recipient
-    attr_reader :email_address
+    attr_reader :pagerduty_api_key
 
-    def initialize(email_address)
-      @email_address = email_address
+    def initialize(pagerduty_api_key)
+      @pagerduty_api_key = pagerduty_api_key
     end
   end
 
-  class Email
+  class Notifier
     def self.send(recipient, message)
-      Clockwork.manager.log "sending email to #{recipient.email_address}: #{message}"
+      raise 'missing pager duty service api key' if recipient.pagerduty_api_key.blank?
+
+      pagerduty = Pagerduty.new(recipient.pagerduty_api_key)
+      pagerduty.trigger(message, incident_key: message)
     end
   end
 
   module Dsl
-    def notify(email_address)
-      @recipient = Recipient.new(email_address)
+    def notify(pagerduty_api_key)
+      @recipient = Recipient.new(pagerduty_api_key)
     end
 
     def every(number_of_minutes, &block)
@@ -82,7 +86,7 @@ module Pager
       )
 
       unless response.success?
-        Email.send(@recipient, response.message)
+        Notifier.send(@recipient, response.message)
       end
     end
   end

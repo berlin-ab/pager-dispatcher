@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "httparty"
   spec.add_runtime_dependency "activesupport"
   spec.add_runtime_dependency "clockwork"
+  spec.add_runtime_dependency "pagerduty"
 
   spec.add_development_dependency "bundler", "~> 1.5"
   spec.add_development_dependency "rake"
