@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'pager/dispatcher/dsl'
+
+every 10.seconds do
+  notify 'berlin.ab@gmail.com'
+
+  check_url 'http://google.com', within: 5.seconds
+  check_url 'http://asdfgooooogle.com', within: 5.seconds
+  check_url 'https://www.pivotaltracker.com/signin', within: 0.005
+end
